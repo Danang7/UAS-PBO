@@ -33,6 +33,8 @@ public class formpenerimaan extends javax.swing.JFrame {
     public formpenerimaan() {
         initComponents();
         showTableData();
+        tblHapus.setEnabled(false);
+        tblKeluar.setEnabled(true);
     }
 
     /**
@@ -412,6 +414,25 @@ public class formpenerimaan extends javax.swing.JFrame {
 
     private void tblHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tblHapusActionPerformed
         // TODO add your handling code here:
+        int id = Integer.parseInt(txtid.getText());
+        try{
+            Class.forName(JDBC_DRIVER);
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            stmt = conn.createStatement();
+            
+            String sql = "DELETE from formpenerimaan WHERE id=?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            ps.execute();
+            stmt.close();
+            conn.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        showTableData();
+        tblSimpan.setEnabled(true);
+        tblEdit.setEnabled(false);
+        tblHapus.setEnabled(false);
     }//GEN-LAST:event_tblHapusActionPerformed
 
     private void tblKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tblKeluarActionPerformed
