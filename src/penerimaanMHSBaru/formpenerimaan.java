@@ -32,6 +32,7 @@ public class formpenerimaan extends javax.swing.JFrame {
      */
     public formpenerimaan() {
         initComponents();
+        showTableData();
     }
 
     /**
@@ -423,6 +424,76 @@ public class formpenerimaan extends javax.swing.JFrame {
 
     }//GEN-LAST:event_prodiActionPerformed
 
+    public void showTableData(){
+        try{
+            items.clear();
+            Class.forName(JDBC_DRIVER);
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            DefaultTableModel model = new DefaultTableModel();
+            model.addColumn("ID");
+            model.addColumn("Nama Mahasiswa Baru");
+            model.addColumn("NISN");
+            model.addColumn("Program studi");
+            model.addColumn("Gender");
+            model.addColumn("Agama");
+            model.addColumn("Tgl Lahir");
+            model.addColumn("Tempat lahir");
+            model.addColumn("Alamat");
+            model.addColumn("telp");
+            model.addColumn("Email");
+            
+            stmt = conn.createStatement();
+            String sql = "SELECT * FROM formpenerimaan";
+            int i = 1;
+            rs = stmt.executeQuery(sql);
+            while(rs.next()){
+                items.add(new modelspenerimaan(rs.getInt("id"), rs.getString("nama"), rs.getInt("NISN"), 
+                rs.getString("program_studi"), rs.getString("gender"), rs.getString("agama"), rs.getString("tanggal_lahir"),
+                rs.getString("tempat_lahir"), rs.getString("alamat"), rs.getInt("no_telp"),
+                rs.getString("email")));
+            }
+            
+            for(modelspenerimaan p : items)
+            {
+                model.addRow(new Object[]{
+                i,
+                p.getNama(),p.getNISN(),p.getProgram_studi(),p.getGender(),p.getAgama(),p.getTanggal_lahir(),
+                p.getTempat_lahir(),p.getAlamat(),p.getNo_telp(),p.getEmail(),
+                });
+                i++;
+            }
+            rs.close();
+            conn.close();
+            stmt.close();
+            
+            TabelPenerimaan.setModel(model);
+            txtid.setVisible(false);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    public void getData(){
+        int baris = TabelPenerimaan.getSelectedRow();
+        txtNama.setText(items.get(baris).getNama());
+        txtNISN.setText(Integer.toString(items.get(baris).getNISN()));
+        txtno_Telp.setText(Integer.toString(items.get(baris).getNo_telp()));
+        txtAgama.setText(items.get(baris).getAgama());
+        txttgl_lhr.setText(items.get(baris).getTanggal_lahir());
+        txttmpt_lhr.setText(items.get(baris).getTempat_lahir());
+        txtAlamat.setText(items.get(baris).getAlamat());
+        txtEmail.setText(items.get(baris).getEmail());
+        prodi.setSelectedItem(items.get(baris).getProgram_studi());
+        genderBox.setSelectedItem(items.get(baris).getGender());
+        
+        txtid.setVisible(false);
+        txtid.setText(Integer.toString(items.get(baris).getId()));
+
+    }
+    
+    
+    
     private void TabelPenerimaanMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TabelPenerimaanMouseClicked
         // TODO add your handling code here:
         getData();
