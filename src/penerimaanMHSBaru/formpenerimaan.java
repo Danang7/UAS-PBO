@@ -33,6 +33,7 @@ public class formpenerimaan extends javax.swing.JFrame {
     public formpenerimaan() {
         initComponents();
         showTableData();
+        tblEdit.setEnabled(false);
         tblHapus.setEnabled(false);
         tblKeluar.setEnabled(true);
     }
@@ -409,7 +410,47 @@ public class formpenerimaan extends javax.swing.JFrame {
 
     private void tblEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tblEditActionPerformed
         // TODO add your handling code here:
-
+        String nama = txtNama.getText();
+        int id = Integer.parseInt(txtid.getText());
+        int NISN = Integer.parseInt(txtNISN.getText());
+        String tanggal_lahir = txttgl_lhr.getText();
+        String tempat_lahir = txttmpt_lhr.getText();
+        String alamat = txtAlamat.getText();
+        int no_telp = Integer.parseInt(txtno_Telp.getText());
+        String email = txtEmail.getText();
+        String program_studi = prodi.getSelectedItem().toString();
+        String agama = txtAgama.getText();
+        String gender = genderBox.getSelectedItem().toString();
+        
+        try{
+            Class.forName(JDBC_DRIVER);
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            stmt = conn.createStatement();
+            
+            String sql = "UPDATE formpenerimaan SET nama=?, NISN=? ,tanggal_lahir=?, tempat_lahir=?, alamat=?, no_telp=?, email=?, program_studi=?, agama=?, gender=? WHERE id=?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            
+            ps.setString(1, nama);
+            ps.setInt(2, NISN);
+            ps.setString(3, tanggal_lahir);
+            ps.setString(4, tempat_lahir);
+            ps.setString(5, alamat);
+            ps.setInt(6, no_telp);
+            ps.setString(7, email);
+            ps.setString(8, program_studi);
+            ps.setString(9, agama);
+            ps.setString(10, gender);
+            ps.setInt(11, id);
+            
+            ps.executeUpdate();
+            
+            stmt.close();
+            conn.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        showTableData();
+    
     }//GEN-LAST:event_tblEditActionPerformed
 
     private void tblHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tblHapusActionPerformed
@@ -549,7 +590,19 @@ public class formpenerimaan extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(formpenerimaan.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        try{
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    
+                    UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 
+                    break;
+                }
+            }
+        }catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
+            
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
